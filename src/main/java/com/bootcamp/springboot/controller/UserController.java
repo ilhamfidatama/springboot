@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("user")
+@RequestMapping("users")
 public class UserController {
 
     @Autowired
@@ -45,13 +45,41 @@ public class UserController {
         );
     }
 
-    @PutMapping("{id}")
-    public ResponseEntity<Object> updateUser(@PathVariable Long id) {
-        Response<Object> result = new Response<>();
-        services.updateUser(id, )
+    @PutMapping("/{id}")
+    public ResponseEntity<Object> updateUser(@PathVariable Long id, @RequestBody UserModel newUser) {
+        try {
+            var result = services.updateUser(id, newUser);
+            return ResponseEntity.ok().body(
+                    Response.builder()
+                            .message("update user success")
+                            .data(result)
+                            .build()
+            );
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(
+                    Response.builder()
+                            .err(true)
+                            .message(e.getMessage())
+                            .build()
+            );
+        }
+    }
 
-        return ResponseEntity.ok().body(
-                null
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Object> deleteUser(@PathVariable Long id) {
+        Boolean isDeleted = services.deleteUser(id);
+        if (isDeleted) {
+            return ResponseEntity.ok().body(
+                    Response.builder()
+                            .message("deleted user success")
+                            .build()
+            );
+        }
+        return ResponseEntity.badRequest().body(
+                Response.builder()
+                        .message("deleted user failed")
+                        .err(true)
+                        .build()
         );
     }
 

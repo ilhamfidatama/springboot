@@ -1,6 +1,7 @@
 package com.bootcamp.springboot.service;
 
 import com.bootcamp.springboot.entity.UserDto;
+import com.bootcamp.springboot.model.Response;
 import com.bootcamp.springboot.model.UserModel;
 import com.bootcamp.springboot.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,12 +42,22 @@ public class UserService {
         return saved.getId();
     }
 
-    public Object updateUser(Long idUser) throws Exception {
-        Optional<UserDto> filterUser = userRepository.findById(idUser);
-        if (filterUser.isEmpty()) {
+    public Object updateUser(Long idUser, UserModel newUser) throws Exception {
+        Optional<UserDto> existedUser = userRepository.findById(idUser);
+        if (existedUser.isEmpty()) {
             throw new Exception("user not exist");
         }
+        UserDto user = existedUser.get();
+        user.setName(newUser.getName());
+        user.setAge(newUser.getAge());
+        return userRepository.saveAndFlush(user);
+    }
 
+    public Boolean deleteUser(Long idUser) {
+        userRepository.deleteById(idUser);
+
+        Optional<UserDto> existedUser = userRepository.findById(idUser);
+        return existedUser.isEmpty();
     }
 
 }
