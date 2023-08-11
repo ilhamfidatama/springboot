@@ -1,6 +1,6 @@
 package com.bootcamp.springboot.service;
 
-import com.bootcamp.springboot.entity.UserDto;
+import com.bootcamp.springboot.entity.UserEntity;
 import com.bootcamp.springboot.model.Response;
 import com.bootcamp.springboot.model.UserModel;
 import com.bootcamp.springboot.repository.UserRepository;
@@ -27,7 +27,7 @@ public class UserService {
             response.setMessage("Success. Users is empty");
         } else {
             List<UserModel> users = new ArrayList<>();
-            usersDb.forEach(userDto -> users.add(userDto.generateToModel()));
+            usersDb.forEach(userEntity -> users.add(userEntity.generateToModel()));
             response.setData(users);
             response.setMessage("Success.");
         }
@@ -35,7 +35,7 @@ public class UserService {
     }
 
     public ResponseEntity<Response<UserModel>> getUserById(Long id){
-        Optional<UserDto> userDb = userRepository.findById(id);
+        Optional<UserEntity> userDb = userRepository.findById(id);
         Response<UserModel> response = new Response<>();
 
         if (userDb.isEmpty()) {
@@ -47,10 +47,10 @@ public class UserService {
         }
 
         UserModel user = new UserModel();
-        userDb.ifPresent(userDto -> {
-            user.setId(userDto.getId());
-            user.setName(userDto.getName());
-            user.setAge(userDto.getAge());
+        userDb.ifPresent(userEntity -> {
+            user.setId(userEntity.getId());
+            user.setName(userEntity.getName());
+            user.setAge(userEntity.getAge());
         });
         response.setData(user);
         response.setMessage("Success.");
@@ -59,11 +59,11 @@ public class UserService {
     }
 
     public ResponseEntity<Response<String>> addUser(UserModel userModel) {
-        UserDto newUserDto = userModel.generateToDto();
+        UserEntity newUserEntity = userModel.generateToDto();
         Response<String> response = new Response<>();
 
         try {
-            userRepository.save(newUserDto);
+            userRepository.save(newUserEntity);
             response.setData("User has been created.");
             response.setMessage("Success created user.");
             return ResponseEntity.ok(response);
@@ -79,7 +79,7 @@ public class UserService {
         Response<UserModel> response = new Response<>();
 
         try {
-            Optional<UserDto> existedUser = userRepository.findById(idUser);
+            Optional<UserEntity> existedUser = userRepository.findById(idUser);
 
             if (existedUser.isEmpty()) {
                 response.setMessage("User doesn't exist!");
@@ -87,7 +87,7 @@ public class UserService {
                 return ResponseEntity.status(HttpStatusCode.valueOf(404)).body(response);
             }
 
-            UserDto user = existedUser.get();
+            UserEntity user = existedUser.get();
             user.setName(newUser.getName());
             user.setAge(newUser.getAge());
 
@@ -105,7 +105,7 @@ public class UserService {
     }
 
     public ResponseEntity<Response<String>> deleteUser(Long idUser) {
-        Optional<UserDto> checkUsers = userRepository.findById(idUser);
+        Optional<UserEntity> checkUsers = userRepository.findById(idUser);
         Response<String> response = new Response<>();
         if (checkUsers.isEmpty()) {
             response.setData("");
@@ -114,7 +114,7 @@ public class UserService {
         }
 
         userRepository.deleteById(idUser);
-        Optional<UserDto> existedUser = userRepository.findById(idUser);
+        Optional<UserEntity> existedUser = userRepository.findById(idUser);
         if (existedUser.isEmpty()){
             response.setData("Success deleted user.");
             response.setMessage("Success.");

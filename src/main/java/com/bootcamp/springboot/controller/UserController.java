@@ -3,6 +3,7 @@ package com.bootcamp.springboot.controller;
 import com.bootcamp.springboot.model.Response;
 import com.bootcamp.springboot.model.UserModel;
 import com.bootcamp.springboot.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +22,7 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<Response<String>> createUser(@RequestBody UserModel userModel) {
+    public ResponseEntity<Response<String>> createUser(@Valid @RequestBody UserModel userModel) {
         return services.addUser(userModel);
     }
 
