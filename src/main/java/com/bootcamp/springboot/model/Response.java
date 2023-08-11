@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class Response<T> {
-    private T data;
+    private T data = null;
     private String message;
     private boolean err = false;
 }

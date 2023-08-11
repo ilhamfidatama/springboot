@@ -1,5 +1,6 @@
 package com.bootcamp.springboot.entity;
 
+import com.bootcamp.springboot.model.UserModel;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,4 +27,12 @@ public class UserDto {
     @Column(nullable = false)
     @Size(max = 90)
     private Integer age;
+
+    public UserModel generateToModel() {
+        return UserModel.builder()
+                .id(this.getId())
+                .name(this.getName())
+                .age(this.getAge())
+                .build();
+    }
 }

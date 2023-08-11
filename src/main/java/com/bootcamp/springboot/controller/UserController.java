@@ -1,6 +1,5 @@
 package com.bootcamp.springboot.controller;
 
-import com.bootcamp.springboot.DatabaseListener;
 import com.bootcamp.springboot.model.Response;
 import com.bootcamp.springboot.model.UserModel;
 import com.bootcamp.springboot.service.UserService;
@@ -17,70 +16,29 @@ public class UserController {
 
     @GetMapping
     public ResponseEntity<Object> getUsers(){
-        var result = services.getUser();
-        return ResponseEntity.ok().body(
-            Response.builder()
-                .data(result)
-                .message("Success")
-                .build()
-        );
+        var response = services.getUser();
+        return ResponseEntity.ok().body(response);
     }
 
     @PostMapping
-    public ResponseEntity<Object> createUser(@RequestBody UserModel userModel) {
-        Long result = services.addUser(userModel);
-        return ResponseEntity.ok().body(
-            Response.builder().data(result).message("success message").build()
-        );
+    public ResponseEntity<Response<String>> createUser(@RequestBody UserModel userModel) {
+        return services.addUser(userModel);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Object> filterById(@PathVariable Long id){
-        var user = services.getUserById(id);
-        return ResponseEntity.ok().body(
-                Response.builder()
-                        .data(user)
-                        .message("success")
-                        .build()
-        );
+    public ResponseEntity<Response<UserModel>> filterById(@PathVariable Long id){
+        ResponseEntity<Response<UserModel>> response = services.getUserById(id);
+        return response;
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Object> updateUser(@PathVariable Long id, @RequestBody UserModel newUser) {
-        try {
-            var result = services.updateUser(id, newUser);
-            return ResponseEntity.ok().body(
-                    Response.builder()
-                            .message("update user success")
-                            .data(result)
-                            .build()
-            );
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(
-                    Response.builder()
-                            .err(true)
-                            .message(e.getMessage())
-                            .build()
-            );
-        }
+    public ResponseEntity<Response<UserModel>> updateUser(@PathVariable Long id, @RequestBody UserModel newUser) {
+        return services.updateUser(id, newUser);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deleteUser(@PathVariable Long id) {
-        Boolean isDeleted = services.deleteUser(id);
-        if (isDeleted) {
-            return ResponseEntity.ok().body(
-                    Response.builder()
-                            .message("deleted user success")
-                            .build()
-            );
-        }
-        return ResponseEntity.badRequest().body(
-                Response.builder()
-                        .message("deleted user failed")
-                        .err(true)
-                        .build()
-        );
+    public ResponseEntity<Response<String>> deleteUser(@PathVariable Long id) {
+        return services.deleteUser(id);
     }
 
 }
